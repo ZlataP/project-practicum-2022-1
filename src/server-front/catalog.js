@@ -1,12 +1,14 @@
 export function catalogRenderData() {
 	return function init(items, {
 		page = 1,
-		limit = 12,
-		sort = 'alf',
+		limit = 6,
+		sort = 'alp',
 		filter = ''
 	}) {
+
 		const filterData = filterFunc([...items], filter);
 		const sortData = sortFunc(filterData, sort);
+		console.log(sortData)
 		return  {
 			pagination: pagination(sortData, page, limit),
 			pageCount: pageCount(items.length, limit),
@@ -17,12 +19,9 @@ export function catalogRenderData() {
 		if ( !filter ) {
 			return items;
 		}
-
-		// фильтрация
 	}
 
 	function sortFunc(items, sort) {
-		// сортировка
 		return items;
 	}
 

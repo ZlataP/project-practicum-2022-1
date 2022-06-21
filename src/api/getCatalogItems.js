@@ -1,6 +1,6 @@
 export default async function getCatalogItems(meta) {
     try {
-        const response = await fetch('http://mvc.php/api-catalog/', {
+        const response = await fetch('http://localhost:5000/api/catalog/', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -8,7 +8,7 @@ export default async function getCatalogItems(meta) {
             body: JSON.stringify(meta)
         });
         const json = await response.json();
-        const {items, pageCount} = json
+        const {items, pageCount} = json.data
 
         return [items, pageCount]
     } catch (error) {

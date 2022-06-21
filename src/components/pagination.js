@@ -32,20 +32,56 @@ export default class Pagination {
 		this.onChange(page)
 	}
 
-	renderPaginationItems(currenPage, pageCount) {
+	renderPaginationItems(currentPage, pageCount) {
 		let html = '<div class="catalog__pagination-pages">';
-		for ( let i = 1; i <= pageCount; i++ ) {
-			html += this.renderPaginationItem(i, +currenPage);
+
+		const pageNeighbours = 2
+		const leftLimit = 4
+
+		if(currentPage === 1) {
+			for (let i = 1; i <= pageCount; i++) {
+				if (i === leftLimit && leftLimit !== pageCount) {
+					html += this.renderPaginationItem(i, +currentPage, true)
+				} else if (i < leftLimit || i === pageCount) {
+					html += this.renderPaginationItem(i, +currentPage)
+				}
+			}
+		} else if (currentPage === pageCount) {
+			for (let i = 1; i <= pageCount; i++) {
+				if (i === pageNeighbours && leftLimit !== pageCount) {
+					html += this.renderPaginationItem(i, +currentPage, true)
+				} else if (i > pageCount - (leftLimit - 1) || i === 1) {
+					html += this.renderPaginationItem(i, +currentPage)
+				}
+			}
+		} else {
+			for (let i = 1; i <= pageCount; i++) {
+				if ((i - 1  <= currentPage && i + 1 >= currentPage) || (i === 1 || i === pageCount)) {
+					html += this.renderPaginationItem(i, +currentPage);
+				} else if (i - pageNeighbours === currentPage) {
+					html += this.renderPaginationItem(i, +currentPage, true)
+				}
+				else if (i + pageNeighbours === currentPage) {
+					html += this.renderPaginationItem(i, +currentPage, true)
+				}
+			}
 		}
+
 		html += '</div>'
 
-		html += this.renderButtons(currenPage, pageCount)
+		html += this.renderButtons(currentPage, pageCount)
 
 		this.el.innerHTML = html;
 	}
 
-	renderPaginationItem(page, currenPage) {
-		if ( page === currenPage ) {
+	renderPaginationItem(page, currentPage, hasSpill) {
+		if(hasSpill) {
+			return `<button class="catalog__pagination-page" data-page="...">
+						...
+					</button>`
+		}
+
+		if (page === currentPage) {
 			return `<button class="catalog__pagination-page catalog__pagination-page_select" data-page="${page}">
 						${page}
 					</button>`;
@@ -56,16 +92,16 @@ export default class Pagination {
 		}
 	}
 
-	renderButtons(currenPage, pageCount) {
+	renderButtons(currentPage, pageCount) {
 		return `
 			<div class="catalog__pagination-by-one">
-        	    <button class="catalog__pagination-arrow" data-page="${currenPage - 1}" ${currenPage === 1 ? 'disabled' : ''}>
+        	    <button class="catalog__pagination-arrow" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>
         	        <svg class="" width="10" height="16">
         	            <use href="#arrow-pagination"></use>
         	        </svg>
         	    </button>
 	
-        	    <button class="catalog__pagination-arrow" data-page="${currenPage + 1}" ${currenPage === pageCount ? 'disabled' : ''}>
+        	    <button class="catalog__pagination-arrow" data-page="${currentPage + 1}" ${currentPage === pageCount ? 'disabled' : ''}>
         	        <svg class="" width="10" height="16">
         	            <use href="#arrow-pagination"></use>
         	        </svg>
